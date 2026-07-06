@@ -7,6 +7,6 @@ export default defineConfig({
       reporter: ["text", "json-summary", "lcov", "cobertura"],
     },
     globals: true,
-    exclude: ["!**/tests/node.test.ts"],
+    include: ["**/tests/node.test.ts"],
   },
 });

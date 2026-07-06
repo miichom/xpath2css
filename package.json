@@ -1,6 +1,7 @@
 {
   "name": "@miichom/xpath2css",
   "version": "0.1.0",
+  "private": true,
   "description": "Lightweight converter that transforms XPath selectors into CSS selectors.",
   "homepage": "https://github.com/miichom/xpath2css",
   "bugs": {
@@ -21,11 +22,14 @@
     "format": "biome format --write",
     "lint": "biome check --write",
     "lint:check": "biome check",
-    "test": "vitest --coverage"
+    "test:bun": "bun test tests/bun.test.ts",
+    "test:deno": "deno task test",
+    "test:node": "vitest --coverage"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",
     "@tsconfig/node22": "^22.0.5",
+    "@types/bun": "latest",
     "@vitest/coverage-v8": "^4.1.9",
     "linkedom": "^0.18.12",
     "tsdown": "^0.22.3",
