@@ -24,28 +24,7 @@ jobs:
                   cache: "pnpm"
             - run: pnpm install --frozen-lockfile
             - run: pnpm build
-    publish-gpr:
-        needs: build
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
-        steps:
-            - uses: actions/checkout@v7
-            - uses: pnpm/action-setup@v6
-              with:
-                  run_install: false
-            - uses: actions/setup-node@v6
-              with:
-                  node-version: "24.x"
-                  registry-url: "https://npm.pkg.github.com"
-                  cache: "pnpm"
-            - run: pnpm install --frozen-lockfile
-            - name: Publish to GitHub Packages
-              run: pnpm publish --provenance --access public
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    publish-npm:
+    publish:
         needs: build
         runs-on: ubuntu-latest
         permissions:
