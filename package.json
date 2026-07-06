@@ -1,7 +1,6 @@
 {
   "name": "@miichom/xpath2css",
   "version": "0.1.0",
-  "private": true,
   "description": "Lightweight converter that transforms XPath selectors into CSS selectors.",
   "keywords": [
     "xpath",
