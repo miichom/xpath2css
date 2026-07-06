@@ -1,1 +1,13 @@
-node_modules
+# ignore build outputs
+dist/
+coverage/
+
+# ignore dependencies
+node_modules/
+
+# ignore package locks and logs
+package-lock.json
+yarn.lock
+bun.lock
+deno.lock
+*.log

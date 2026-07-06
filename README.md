@@ -1,33 +1,37 @@
-# XPath to CSS
+# @miichom/xpath2css
 
-![Tests][tests-badge]
-[![NPM version][npm-image]][npm-url]
+[![npm](https://img.shields.io/npm/v/@miichom/xpath2css.svg)](https://www.npmjs.com/package/@miichom/xpath2css)
+![node](https://img.shields.io/node/v/@miichom/xpath2css)
 
-Utility function for converting XPath expressions to CSS selectors.
+A lightweight, dependency‑free utility for converting XPath selectors into CSS selectors. Ideal for scrapers, DOM utilities, testing frameworks, and environments where XPath is stored but CSS is executed.
 
-Originally written in Python by [santiycr](https://github.com/santiycr) for [cssify](https://github.com/santiycr/cssify) and ported to JavaScript by [Dither](https://github.com/Dither) who published it in [this gist](https://gist.github.com/Dither/1909679). Since I needed it in a project and can't depend on a gist in my `package.json` I have converted it to ES2015 and CommonJS, cleaned it up a bit and [published it to npm][npm-url].
+This package is a modern TypeScript rewrite of the original Python [cssify](https://github.com/santiycr/cssify) converter created by [santiycr](https://github.com/santiycr). It was later ported to JavaScript by [Dither](https://github.com/Dither), and subsequently converted to ES2015 and CommonJS, and published to npm by [svenheden](https://github.com/svenheden).
 
 ## Install
 
-```
-$ npm install --save xpath-to-css
+```bash
+npm install --save-dev @miichom/xpath2css
 ```
 
 ## Usage
 
-```js
-import xPathToCss from "xpath-to-css";
+```ts
+// npm, pnpm, yarn, bun
+import { xPathToCss } from "@miichom/xpath2css";
 
-const xPath =
-  '//div[@id="foo"][2]/span[@class="bar"]//a[contains(@class, "baz")]//img[1]';
+// deno
+import { xPathToCss } from "https://esm.sh/@miichom/xpath2css";
+import { xPathToCss } from "npm:@miichom/xpath2css"; // or directly from npm
+
+const xPath = "//div[@id="foo"][2]/span[@class="bar"]//a[contains(@class, "baz")]//img[1]";
 const css = xPathToCss(xPath);
-console.log(css); // => 'div#foo:nth-of-type(2) > span.bar a[class*=baz] img:first-of-type'
+console.log(css) // => 'div#foo:nth-of-type(2) > span.bar a[class*=baz] img:first-of-type'
 ```
+
+## Contributing
+
+Bug reports, improvements, and new test cases are welcome. See the [Contributing Guidelines](./CONTRIBUTING.md) for details.
 
 ## License
 
-MIT © [Jonathan Svenheden](https://github.com/svenheden)
-
-[npm-url]: https://npmjs.org/package/xpath-to-css
-[npm-image]: https://badge.fury.io/js/xpath-to-css.svg
-[tests-badge]: https://github.com/svenheden/xpath-to-css/workflows/Tests/badge.svg
+MIT &copy; 2015-2026 [Jonathan Svenheden](https://github.com/svenheden), 2026-present [miichom](https://github.com/miichom)
