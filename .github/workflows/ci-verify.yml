@@ -22,7 +22,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - if: matrix.runtime == 'node'
         run: |
-          npm ci
+          npm install
           npm run test:node
       - name: Bun
         if: matrix.runtime == 'bun'
@@ -37,7 +37,9 @@ jobs:
         with:
           deno-version: v2.x
       - if: matrix.runtime == 'deno'
-        run: npm run test:deno
+        run: |
+          deno install
+          npm run test:deno
 
   publish:
     runs-on: ubuntu-latest
