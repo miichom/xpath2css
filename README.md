@@ -23,7 +23,7 @@ import { xPathToCss } from "@miichom/xpath2css";
 import { xPathToCss } from "https://esm.sh/@miichom/xpath2css";
 import { xPathToCss } from "npm:@miichom/xpath2css"; // or directly from npm
 
-const xPath = "//div[@id="foo"][2]/span[@class="bar"]//a[contains(@class, "baz")]//img[1]";
+const xPath = '//div[@id="foo"][2]/span[@class="bar"]//a[contains(@class, "baz")]//img[1]';
 const css = xPathToCss(xPath);
 console.log(css) // => 'div#foo:nth-of-type(2) > span.bar a[class*=baz] img:first-of-type'
 ```
