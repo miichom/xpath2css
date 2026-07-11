@@ -12,13 +12,6 @@ export interface XPathStep {
   predicates: Predicate[];
 }
 
-class xPathToCssError extends Error {
-  constructor(message: string, name = "XPath2CssError") {
-    super(message);
-    this.name = name;
-  }
-}
-
 /**
  * Preprocess special XPath patterns into simpler forms.
  * @param {string} expr The raw XPath expression
@@ -160,14 +153,14 @@ export const tokenizeXPath = (expr: string): XPathStep[] => {
         continue;
       }
 
-      throw new xPathToCssError(`Unsupported predicate: ${content}`);
+      throw new Error(`Unsupported predicate: ${content}`);
     }
 
     steps.push({ axis: axisType, tag, predicates: preds });
   }
 
   if (steps.length === 0) {
-    throw new xPathToCssError(`Invalid or unsupported XPath: ${expr}`);
+    throw new Error(`Invalid or unsupported XPath: ${expr}`);
   }
 
   return steps;

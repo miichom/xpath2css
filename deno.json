@@ -1,9 +1,0 @@
-{
-  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
-  "tasks": {
-    "test": "deno test **/tests/deno*.test.ts --clean --coverage --no-check --allow-net"
-  },
-  "imports": {
-    "@std/assert": "jsr:@std/assert@1"
-  }
-}
