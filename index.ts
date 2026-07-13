@@ -19,9 +19,7 @@ function resolveAxis(axis: string | undefined, index: number): Axis {
   if (!axis) return index === 0 ? "descendant" : "child";
 
   if (axis === "//") return "descendant";
-  else if (axis === "/") return "child";
   else if (axis === "following-sibling::") return "followingSibling";
-
   return "child";
 }
 
