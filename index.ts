@@ -1,22 +1,31 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: match.groups is guaranteed by the regex structure */
-export type Axis = "root" | "child" | "descendant" | "followingSibling";
-export type Predicate =
+type Axis = "root" | "child" | "descendant" | "followingSibling";
+
+type Predicate =
   | { type: "id" | "class"; value: string }
   | { type: "attrEquals" | "attrContains"; name: string; value: string }
   | { type: "nth"; index: number }
   | { type: "nthLast" };
 
-export interface XPathStep {
-  axis: Axis;
-  tag: string | "*";
-  predicates: Predicate[];
-}
+type XPathStep = { axis: Axis; tag: string; predicates: Predicate[] };
 
-class xPathToCssError extends Error {
-  constructor(message: string, name = "XPath2CssError") {
-    super(message);
-    this.name = name;
-  }
+/**
+ * Resolve an XPath axis token into a normalized Axis value.
+ * @param {string | undefined} axis The raw axis token extracted from the XPath expression
+ * @param {number} index The step index (used to determine combinator)
+ * @returns {Axis} The resolved XPath axis
+ * @example
+ * ```ts
+ * const axis = resolveAxis("//")
+ * console.log(axis) // => "descendant"
+ * ```
+ */
+function resolveAxis(axis: string | undefined, index: number): Axis {
+  if (!axis) return index === 0 ? "descendant" : "child";
+
+  if (axis === "//") return "descendant";
+  else if (axis === "following-sibling::") return "followingSibling";
+  return "child";
 }
 
 /**
@@ -29,12 +38,12 @@ class xPathToCssError extends Error {
  * console.log(parsed) // => '@class="foo"'
  * ```
  */
-export const preParseXPath = (expr: string): string => {
+function preParseXPath(expr: string): string {
   return expr.replace(
     /contains\s*\(\s*concat\(["']\s+["']\s*,\s*@class\s*,\s*["']\s+["']\)\s*,\s*["']\s+([a-zA-Z0-9-_]+)\s+["']\)/gi,
-    '@class="$1"'
+    '@class="$1"',
   );
-};
+}
 
 /**
  * Convert a single parsed XPath step into a CSS fragment
@@ -47,29 +56,28 @@ export const preParseXPath = (expr: string): string => {
  * console.log(css); // => " > div"
  * ```
  */
-export const stepToCss = (step: XPathStep, index: number = 0): string => {
+function stepToCss(step: XPathStep, index: number): string {
   const nav =
-    index === 0
+    index === 0 || step.axis === "root"
       ? ""
       : step.axis === "descendant"
         ? " "
         : step.axis === "child"
           ? " > "
-          : step.axis === "followingSibling"
-            ? " + "
-            : "";
+          : " + ";
 
   const tag = step.tag === "*" ? "" : step.tag;
 
-  let attrs = "",
-    nth = "";
+  let attrs = "";
+  let nth = "";
+
   for (const p of step.predicates) {
     switch (p.type) {
       case "id":
-        attrs += `#${p.value!.replace(/\s+/g, "#")}`;
+        attrs += `#${p.value.replace(/\s+/g, "#")}`;
         break;
       case "class":
-        attrs += `.${p.value!.replace(/\s+/g, ".")}`;
+        attrs += `.${p.value.replace(/\s+/g, ".")}`;
         break;
       case "attrEquals":
         attrs += `[${p.name}="${p.value}"]`;
@@ -87,10 +95,7 @@ export const stepToCss = (step: XPathStep, index: number = 0): string => {
   }
 
   return nav + tag + attrs + nth;
-};
-
-const StepRegex =
-  /(?<axis>\/\/|\/|following-sibling::)?(?<tag>[a-zA-Z][\w:-]*|\*)(?<predicates>(\[[^\]]+\])*)/g;
+}
 
 /**
  * Tokenize a full XPath expression into structured steps.
@@ -103,24 +108,19 @@ const StepRegex =
  * console.log(steps); // => [{ axis: "descendant", ...  }, ...]
  * ```
  */
-export const tokenizeXPath = (expr: string): XPathStep[] => {
-  const steps: XPathStep[] = [];
+function tokenizeXPath(expr: string): XPathStep[] {
+  expr = preParseXPath(expr);
 
-  expr = preParseXPath(expr.trim());
-  for (const match of expr.matchAll(StepRegex)) {
-    const { axis, tag, predicates } = match.groups!;
-    const axisType: Axis =
-      axis === "/"
-        ? "child"
-        : axis === "//"
-          ? "descendant"
-          : axis.startsWith("following-sibling")
-            ? "followingSibling"
-            : !axis
-              ? steps.length === 0
-                ? "descendant"
-                : "child"
-              : "child";
+  const steps: XPathStep[] = [];
+  for (const match of expr.matchAll(
+    /(?<axis>\/\/|\/)?(?<tag>[a-zA-Z][\w:-]*|\*)(?<predicates>(\[[^\]]+\])*)/g,
+  )) {
+    let { axis, tag, predicates } = match.groups!;
+
+    if (tag.startsWith("following-sibling::")) {
+      axis = "following-sibling::";
+      tag = tag.slice("following-sibling::".length);
+    }
 
     const preds: Predicate[] = [];
     for (const p of predicates.matchAll(/\[(?<content>[^\]]+)\]/g)) {
@@ -139,7 +139,7 @@ export const tokenizeXPath = (expr: string): XPathStep[] => {
 
       const containsMatch =
         /^contains\(@(?<name>[a-zA-Z_][\w:-]*),\s*["'](?<value>[^"']+)["']\)$/.exec(
-          content
+          content,
         );
       if (containsMatch?.groups) {
         preds.push({
@@ -160,18 +160,22 @@ export const tokenizeXPath = (expr: string): XPathStep[] => {
         continue;
       }
 
-      throw new xPathToCssError(`Unsupported predicate: ${content}`);
+      throw new Error(`Unsupported predicate: ${content}`);
     }
 
-    steps.push({ axis: axisType, tag, predicates: preds });
+    steps.push({
+      axis: resolveAxis(axis, steps.length),
+      tag,
+      predicates: preds,
+    });
   }
 
   if (steps.length === 0) {
-    throw new xPathToCssError(`Invalid or unsupported XPath: ${expr}`);
+    throw new Error(`Invalid or unsupported XPath: ${expr}`);
   }
 
   return steps;
-};
+}
 
 /**
  * Convert a full XPath expression (including unions) into a CSS selector
@@ -183,17 +187,11 @@ export const tokenizeXPath = (expr: string): XPathStep[] => {
  * console.log(selector) // => "div#foo > span:nth-of-type(2)"
  * ```
  */
-export const xPathToCss = (expr: string): string => {
-  const parts = expr
+export function xPathToCss(expr: string): string {
+  return expr
     .split("|")
     .map((p) => p.trim())
-    .filter(Boolean);
-  const selectors: string[] = [];
-
-  for (const part of parts) {
-    const steps = tokenizeXPath(part);
-    selectors.push(steps.map(stepToCss).join(""));
-  }
-
-  return selectors.join(", ");
-};
+    .filter(Boolean)
+    .map((part) => tokenizeXPath(part).map(stepToCss).join(""))
+    .join(", ");
+}

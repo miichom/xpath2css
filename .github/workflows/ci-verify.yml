@@ -28,14 +28,14 @@ jobs:
       - if: matrix.runtime == 'node'
         run: |
           npm install
-          npm run test:node
+          npm run test
       - name: Bun
         if: matrix.runtime == 'bun'
         uses: oven-sh/setup-bun@v1
       - if: matrix.runtime == 'bun'
         run: |
           bun install
-          npm run test:bun
+          npm run test
       - name: Deno
         if: matrix.runtime == 'deno'
         uses: denoland/setup-deno@v1
@@ -44,7 +44,7 @@ jobs:
       - if: matrix.runtime == 'deno'
         run: |
           deno install
-          npm run test:deno
+          npm run test
 
   publish:
     runs-on: ubuntu-latest

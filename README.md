@@ -13,7 +13,7 @@ This package is a modern TypeScript rewrite of the original Python [cssify](http
 npm install --save-dev @miichom/xpath2css
 ```
 
-## Usage
+## Basic Usage
 
 ```ts
 // npm, pnpm, yarn, bun

@@ -4,7 +4,6 @@
   "compilerOptions": {
     "declaration": true,
     "outDir": "dist",
-    "rootDir": ".",
     "module": "esnext",
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true,

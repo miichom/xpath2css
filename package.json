@@ -32,19 +32,18 @@
     "format": "biome format --write",
     "lint": "biome check --write",
     "lint:check": "biome check",
-    "test:bun": "bun test tests/bun.test.ts",
-    "test:deno": "deno task test",
-    "test:node": "vitest --coverage"
+    "test": "vitest --coverage"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.2",
+    "@biomejs/biome": "^2.5.3",
     "@tsconfig/node22": "^22.0.5",
     "@types/bun": "latest",
-    "@vitest/coverage-v8": "^4.1.9",
-    "linkedom": "^0.18.12",
-    "tsdown": "^0.22.3",
+    "@vitest/coverage-v8": "^4.1.10",
+    "linkedom": "^0.18.13",
+    "std-env": "^4.2.0",
+    "tsdown": "^0.22.4",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "packageManager": "pnpm@10.28.0",
   "engines": {
