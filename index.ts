@@ -10,10 +10,15 @@ type Predicate =
 type XPathStep = { axis: Axis; tag: string; predicates: Predicate[] };
 
 /**
- *
- * @param {string | undefined} axis
- * @param {number} index
- * @returns {Axis}
+ * Resolve an XPath axis token into a normalized Axis value.
+ * @param {string | undefined} axis The raw axis token extracted from the XPath expression
+ * @param {number} index The step index (used to determine combinator)
+ * @returns {Axis} The resolved XPath axis
+ * @example
+ * ```ts
+ * const axis = resolveAxis("//")
+ * console.log(axis) // => "descendant"
+ * ```
  */
 function resolveAxis(axis: string | undefined, index: number): Axis {
   if (!axis) return index === 0 ? "descendant" : "child";
