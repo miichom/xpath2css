@@ -41,7 +41,7 @@ function resolveAxis(axis: string | undefined, index: number): Axis {
 function preParseXPath(expr: string): string {
   return expr.replace(
     /contains\s*\(\s*concat\(["']\s+["']\s*,\s*@class\s*,\s*["']\s+["']\)\s*,\s*["']\s+([a-zA-Z0-9-_]+)\s+["']\)/gi,
-    '@class="$1"',
+    '@class="$1"'
   );
 }
 
@@ -113,7 +113,7 @@ function tokenizeXPath(expr: string): XPathStep[] {
 
   const steps: XPathStep[] = [];
   for (const match of expr.matchAll(
-    /(?<axis>\/\/|\/)?(?<tag>[a-zA-Z][\w:-]*|\*)(?<predicates>(\[[^\]]+\])*)/g,
+    /(?<axis>\/\/|\/)?(?<tag>[a-zA-Z][\w:-]*|\*)(?<predicates>(\[[^\]]+\])*)/g
   )) {
     let { axis, tag, predicates } = match.groups!;
 
@@ -139,7 +139,7 @@ function tokenizeXPath(expr: string): XPathStep[] {
 
       const containsMatch =
         /^contains\(@(?<name>[a-zA-Z_][\w:-]*),\s*["'](?<value>[^"']+)["']\)$/.exec(
-          content,
+          content
         );
       if (containsMatch?.groups) {
         preds.push({
