@@ -2,16 +2,7 @@
   "name": "@miichom/xpath2css",
   "version": "0.1.0",
   "description": "Lightweight converter that transforms XPath selectors into CSS selectors.",
-  "keywords": [
-    "xpath",
-    "css selector",
-    "xpath to css",
-    "transform",
-    "scraping",
-    "crawler",
-    "node",
-    "deno"
-  ],
+  "keywords": ["nodejs", "typescript", "bun", "deno", "xpath-to-css"],
   "homepage": "https://github.com/miichom/xpath2css",
   "bugs": {
     "url": "https://github.com/miichom/xpath2css/issues"
